@@ -6,6 +6,7 @@ public class Main {
 
     static Scanner input = new Scanner(System.in);
     static int accountMaxCount = 10;
+    static int postMaxCount = 10;
     static User[] registeredUsers = new User[accountMaxCount];
     static String currentUsername;
     static String userPost;
@@ -36,15 +37,20 @@ public class Main {
                     break;
                 case 3:
                     if (isSignedIn) {
-                        writePost();
-                        for (int i = 0; i < accountMaxCount; i++) {
-                            if(!registeredUsers[i].getUsername().equals(null) && registeredUsers[i].getUsername().equals(currentUsername)){
-                                registeredUsers[i].getPosts().equals(userPost);
+                        String post = writePost();
+                        for (int i = 0; i < regCount; i++) {
+                            if (registeredUsers[i].getUsername().equals(currentUsername)) {
+                                registeredUsers[i].setPosts(post);
                             }
 
                         }
                     } else {
                         System.out.println("You cannot create or view posts.");
+                    }
+                    break;
+                case 4:
+                    for (int i = 0; i < regCount; i++) {
+                        registeredUsers[i].getPosts();
                     }
                     break;
                 default:
@@ -55,11 +61,11 @@ public class Main {
         }
     }
 
-    private static void writePost() {
+    private static String writePost() {
         Scanner postInput = new Scanner(System.in);
         System.out.println("Please type your post.");
         String post = postInput.next();
-        userPost = post;
+        return post;
     }
 
 
@@ -112,7 +118,8 @@ public class Main {
     public static void printMenu() {
         System.out.println("Press 1 to register, \n" +
                 "Press 2 to sign in, \n" +
-                "Press 3 to add or view posts, \n" +
-                "Press any key to exit.");
+                "Press 3 to add posts, \n" +
+                "Press 4 to view posts. \n" +
+                "Press other number to exit.");
     }
 }

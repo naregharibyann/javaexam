@@ -5,7 +5,8 @@ public class User {
     private String name;
     private String username;
     private String password;
-    private String posts;
+    private String[] posts = new String[posMaxCount];
+    static int posMaxCount = 10;
 
 
     public User(String name, String username, String password) {
@@ -55,11 +56,31 @@ public class User {
         this.password = password;
     }
 
-    public String getPosts() {
-        return posts;
+    public void getPosts() {
+        int j = 0;
+
+        for (int i = 0; i < posMaxCount; i++) {
+            if (this.posts[i] != null) {
+                if (j == 0) {
+                    System.out.println(getUsername() + " has following posts ");
+                }
+                System.out.println("- " + this.posts[i]);
+                j++;
+            }
+        }
+        if (j == 0) {
+            System.out.println(getUsername() + " has no posts.");
+        }
     }
 
-    public void setPosts(String posts) {
-        this.posts = posts;
+    public void setPosts(String post) {
+        for (int i = 0; i < posMaxCount; i++) {
+            if (this.posts[i] == null) {
+                this.posts[i] = post;
+                break;
+            } else {
+                System.out.println("You cannot post anymore");
+            }
+        }
     }
 }
