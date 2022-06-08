@@ -4,122 +4,147 @@ import java.util.Scanner;
 
 public class Main {
 
-    static Scanner input = new Scanner(System.in);
-    static int accountMaxCount = 10;
-    static int postMaxCount = 10;
-    static User[] registeredUsers = new User[accountMaxCount];
-    static String currentUsername;
-    static String userPost;
+    public static boolean isLoggedIn = false;
+    public static String currentUserName;
+    public static Scanner scn = new Scanner(System.in);
+    public static boolean isFinished = false;
 
     public static void main(String[] args) {
-        int regCount = 0;
-        boolean toggle = true;
-        boolean isSignedIn = false;
 
-        while (toggle) {
-            printMenu();
-            int selection = input.nextInt();
-            switch (selection) {
-                case 1:
-                    if (regCount > accountMaxCount) {
-                        System.out.println("Registration is full. You can only sign in.");
-                    } else {
-                        User userReg = registration();
-                        if (userReg != null) {
-                            registeredUsers[regCount] = userReg;
-                            regCount++;
-                        }
-                    }
-                    break;
-                case 2:
-                    isSignedIn = signIn(registeredUsers, regCount);
-                    System.out.println(isSignedIn);
-                    break;
-                case 3:
-                    if (isSignedIn) {
-                        String post = writePost();
-                        for (int i = 0; i < regCount; i++) {
-                            if (registeredUsers[i].getUsername().equals(currentUsername)) {
-                                registeredUsers[i].setPosts(post);
-                            }
 
-                        }
-                    } else {
-                        System.out.println("You cannot create or view posts.");
-                    }
-                    break;
-                case 4:
-                    for (int i = 0; i < regCount; i++) {
-                        registeredUsers[i].getPosts();
-                    }
-                    break;
-                default:
-                    toggle = false;
-                    break;
-
+        while (!isFinished) {
+            if (isLoggedIn) {
+                handleLoggedInFlow();
+            } else {
+                handleLoggedOutFlow();
             }
         }
     }
 
-    private static String writePost() {
-        Scanner postInput = new Scanner(System.in);
-        System.out.println("Please type your post.");
-        String post = postInput.next();
-        return post;
-    }
-
-
-    private static boolean signIn(User[] registeredUser, int regCount) {
-        Scanner signIn = new Scanner(System.in);
-        System.out.println("Please enter username. ");
-        String username = signIn.next();
-        System.out.println("Please enter password. ");
-        String password = signIn.next();
-
-        if (regCount == 0) {
-            System.out.println("You cannot log in.");
-            return false;
+    private static void handleLoggedOutFlow() {
+        printLoggedOutMenu();
+        try{
+        int choice = scn.nextInt();
+        switch (choice) {
+            case 1:
+                registerUser();
+                break;
+            case 2:
+                loginUser();
+                break;
+            case 3:
+                exitProgram();
+                break;
+            default:
+                System.out.println("Invalid choice");
+        }
+        }
+        catch (Exception e){
+            System.out.println("Incorrect choice.");
+            exitProgram();
         }
 
-        for (int i = 0; i < regCount; i++) {
-            if (registeredUser[i].getUsername().equals(username) && registeredUser[i].getPassword().equals(password)) {
-                System.out.println("Login successful. ");
-                currentUsername = username;
-                return true;
-            }
-
-        }
-        System.out.println("Username or password is wrong. ");
-        return false;
     }
 
-    private static User registration() {
-        Scanner registration = new Scanner(System.in);
-        System.out.println("Please enter your name: ");
-        String name = registration.next();
-        System.out.println("Please enter username: ");
-        String username = registration.next();
-        System.out.println("Please enter password: ");
-        String password = registration.next();
-        System.out.println("Please confirm password: ");
-        String passwordConf = registration.next();
+    private static void exitProgram() {
+        isFinished = true;
+    }
 
-        if (!password.equals(passwordConf)) {
-            System.out.println("Passwords don't match. Registration failed. ");
-            return null;
+    private static void loginUser() {
+        System.out.println("Type Username");
+        String username = scn.next();
+        System.out.println("Type password");
+        String password = scn.next();
+        boolean isValid = UserService.validateUser(username, password);
+        if (isValid) {
+            currentUserName = username;
+            isLoggedIn = true;
         } else {
-            User user = new User(name, username, password);
-            System.out.println("Successfully registered. ");
-            return user;
+            System.out.println("invalid credentials");
+        }
+
+    }
+
+    private static void registerUser() {
+        System.out.println("Type Username");
+        String username = scn.next();
+        System.out.println("Type password");
+        String password = scn.next();
+        User user = new User(username, password);
+        boolean isAdded = UserService.addUser(user);
+        if (isAdded) {
+            System.out.println("you have registered successfully");
+        } else {
+            System.out.println("something went wrong, try again");
         }
     }
 
+    private static void handleLoggedInFlow() {
+        printLoggedInMenu();
+        try{
+        int choice = scn.nextInt();
+        switch (choice) {
+            case 1:
+                writePost();
+                break;
+            case 2:
+                showAllPosts();
+                break;
+            case 3:
+                logout();
+                break;
+            case 4:
+                exitProgram();
+                break;
+            default:
+                System.out.println("Invalid choice");
+        }
+        }
+        catch (Exception e){
+            System.out.println("Incorrect input");
+        }
 
-    public static void printMenu() {
-        System.out.println("Press 1 to register, \n" +
-                "Press 2 to sign in, \n" +
-                "Press 3 to add posts, \n" +
-                "Press 4 to view posts. \n" +
-                "Press other number to exit.");
+
     }
+
+    private static void logout() {
+        isLoggedIn = false;
+        currentUserName = null;
+    }
+
+    private static void showAllPosts() {
+        User[] allUsers = UserService.getAllUsers();
+        for (User user : allUsers) {
+            if (user != null) {
+                for (String post : user.getPosts()) {
+                    if (post != null) {
+                        System.out.println(user.getUsername() + " : " + post);
+                    }
+                }
+            }
+        }
+    }
+
+    private static void writePost() {
+        System.out.println("Write post");
+        String post = scn.next();
+        boolean isAdded = UserService.addPostToUser(currentUserName, post);
+        if (isAdded) System.out.println("Your post have been added successfully");
+        else System.out.println("Something went wrong");
+    }
+
+    private static void printLoggedInMenu() {
+        System.out.println("1 for write post");
+        System.out.println("2 for read all posts");
+        System.out.println("3 for logout");
+        System.out.println("4 for exit");
+    }
+
+
+    private static void printLoggedOutMenu() {
+        System.out.println("1 for reg");
+        System.out.println("2 for login");
+        System.out.println("3 for exit");
+    }
+
 }
