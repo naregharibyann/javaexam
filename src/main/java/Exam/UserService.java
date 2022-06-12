@@ -1,21 +1,26 @@
 package Exam;
 
+import java.util.ArrayList;
+
+import static Exam.Main.users;
+
 public class UserService {
 
-    private static User[] users = new User[10];
 
-    public static User[] getAllUsers() {
+    public static ArrayList<User> getAllUsers() {
         return users;
     }
 
     public static boolean addUser(User user) {
-        for (int i = 0; i < users.length; i++) {
-            if (users[i] == null) {
-                users[i] = user;
-                return true;
-            }
-        }
-        return false;
+//        for (int i = 0; i < users.length; i++) {
+//            if (users[i] == null) {
+//                users[i] = user;
+//                return true;
+//            }
+//        }
+//        return false;
+        users.add(user);
+        return true;
     }
 
     public static User getUserByUsername(String username) {
@@ -26,6 +31,7 @@ public class UserService {
         }
         return null;
     }
+
 
     public static boolean validateUser(String username, String password) {
         User user = getUserByUsername(username);
@@ -39,12 +45,8 @@ public class UserService {
     public static boolean addPostToUser(String username, String post) {
         User user = getUserByUsername(username);
         if (user == null) return false;
-        for (int i = 0; i < user.getPosts().length; i++) {
-            if (user.getPosts()[i] == null) {
-                user.getPosts()[i] = post;
-                return true;
-            }
-        }
-        return false;
+        user.getPosts().add(post);
+        return true;
     }
+
 }

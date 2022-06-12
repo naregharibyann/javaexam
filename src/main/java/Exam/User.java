@@ -1,9 +1,36 @@
 package Exam;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class User {
     private String username;
     private String password;
-    private String[] posts = new String[10];
+    private ArrayList<String> posts = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", posts=" + posts +
+                '}';
+    }
+
+    //    @Override
+//    public String toString() {
+//        return "User{" +
+//                "username='" + username + '\'' +
+//                ", password='" + password + '\'' +
+//                ", posts=" + Arrays.toString(posts) +
+//                '}';
+//    }
+
+    public static User fromString(String str){
+        User user = new User();
+
+        return user;
+    }
 
     public User() {
     }
@@ -29,11 +56,11 @@ public class User {
         this.password = password;
     }
 
-    public String[] getPosts() {
+    public ArrayList<String> getPosts() {
         return posts;
     }
 
-    public void setPosts(String[] posts) {
+    public void setPosts(ArrayList<String> posts) {
         this.posts = posts;
     }
 }
