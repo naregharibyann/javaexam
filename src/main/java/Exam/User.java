@@ -1,39 +1,43 @@
 package Exam;
 
-public class User {
+import java.util.ArrayList;
+import java.util.Arrays;
 
-    private String name;
+public class User {
     private String username;
     private String password;
-    private String[] posts = new String[posMaxCount];
-    static int posMaxCount = 10;
+    private ArrayList<String> posts = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", posts=" + posts +
+                '}';
+    }
 
-    public User(String name, String username, String password) {
-        this.name = name;
+    //    @Override
+//    public String toString() {
+//        return "User{" +
+//                "username='" + username + '\'' +
+//                ", password='" + password + '\'' +
+//                ", posts=" + Arrays.toString(posts) +
+//                '}';
+//    }
+
+    public static User fromString(String str){
+        User user = new User();
+
+        return user;
+    }
+
+    public User() {
+    }
+
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        boolean check = true;
-        String niceName = name.toLowerCase();
-        while (check) {
-
-            for (int i = 0; i < niceName.length(); i++) {
-
-                if (name.charAt(i) < 97 || name.charAt(i) > 122) {
-                    System.out.println("Name should only include letters.");
-                    break;
-                }
-            }
-            check = false;
-        }
-        this.name = name;
     }
 
     public String getUsername() {
@@ -41,11 +45,7 @@ public class User {
     }
 
     public void setUsername(String username) {
-        if (username.length() < 5) {
-            System.out.println("Username should have at least 5 characters.");
-        } else {
-            this.username = username;
-        }
+        this.username = username;
     }
 
     public String getPassword() {
@@ -56,31 +56,11 @@ public class User {
         this.password = password;
     }
 
-    public void getPosts() {
-        int j = 0;
-
-        for (int i = 0; i < posMaxCount; i++) {
-            if (this.posts[i] != null) {
-                if (j == 0) {
-                    System.out.println(getUsername() + " has following posts ");
-                }
-                System.out.println("- " + this.posts[i]);
-                j++;
-            }
-        }
-        if (j == 0) {
-            System.out.println(getUsername() + " has no posts.");
-        }
+    public ArrayList<String> getPosts() {
+        return posts;
     }
 
-    public void setPosts(String post) {
-        for (int i = 0; i < posMaxCount; i++) {
-            if (this.posts[i] == null) {
-                this.posts[i] = post;
-                break;
-            } else {
-                System.out.println("You cannot post anymore");
-            }
-        }
+    public void setPosts(ArrayList<String> posts) {
+        this.posts = posts;
     }
 }
